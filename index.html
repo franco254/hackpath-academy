@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HackPath Academy — Linux Basics for Hackers</title>
+<title>HackPath Academy — Linux Foundations for Ethical Hacking</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0d0f;--surface:#0f1419;--surface2:#141c24;--border:#1e2d3d;--green:#00ff88;--gd:#00cc6a;--cyan:#00d4ff;--red:#ff3366;--orange:#ff8c00;--yellow:#ffd700;--text:#c9d1d9;--dim:#6e7681;--bright:#e6edf3;--mono:'Share Tech Mono',monospace;--disp:'Orbitron',sans-serif;--body:'Inter',sans-serif}
@@ -683,6 +683,7 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -704,7 +705,7 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
 
   <!-- Hero -->
   <div class="land-hero">
-    <div class="land-eyebrow">Based on OccupyTheWeb's bestselling book</div>
+    <div class="land-eyebrow">Linux & Cybersecurity Foundations</div>
     <h1 class="land-h1">
       Hack the <span class="acc-g">Terminal</span>.<br>
       Master <span class="acc-c">Linux</span>.<br>
@@ -838,8 +839,8 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
   <!-- Footer -->
   <div class="land-footer">
     <div class="land-footer-brand">HACK<span>PATH</span></div>
-    <div class="land-footer-sub" style="margin-top:.3rem">Linux Basics for Hackers — Course Platform</div>
-    <div class="land-footer-sub" style="margin-top:.8rem;opacity:.4">Based on OccupyTheWeb's "Linux Basics for Hackers" · No Starch Press, 2018</div>
+    <div class="land-footer-sub" style="margin-top:.3rem">Linux Foundations for Ethical Hacking</div>
+    <div class="land-footer-sub" style="margin-top:.8rem;opacity:.4">HackPath Academy · Linux Foundations for Ethical Hacking</div>
   </div>
 </div>
 
@@ -850,7 +851,7 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
       <div class="auth-logo">
         <button onclick="showLanding()" style="background:none;border:none;color:var(--dim);font-family:var(--mono);font-size:.6rem;letter-spacing:1.5px;cursor:pointer;margin-bottom:.8rem;display:flex;align-items:center;gap:.4rem;text-transform:uppercase;padding:0;transition:color .2s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--dim)'">← BACK TO HOME</button>
         <div class="auth-logo-brand">HACK<span>PATH</span></div>
-        <div class="auth-logo-sub">Linux Basics for Hackers — Course Platform</div>
+        <div class="auth-logo-sub">Linux Foundations for Ethical Hacking</div>
       </div>
       <div class="auth-tabs">
         <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">SIGN IN</button>
@@ -987,9 +988,9 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
 <!-- HOME -->
 <div id="view-home" class="view active">
   <div class="hero">
-    <div class="htag">// HACKPATH ACADEMY — LINUX BASICS FOR HACKERS v3.0</div>
+    <div class="htag">// HACKPATH ACADEMY — LINUX FOUNDATIONS FOR ETHICAL HACKING</div>
     <h1>Master Linux<br>for <span class="acc">Ethical Hacking</span></h1>
-    <p class="hdesc">The most comprehensive Linux-for-hackers course online. 17 deep-dive modules, 85+ structured lessons with real terminal sessions, CTF challenges, and a professional certificate — built from OccupyTheWeb's definitive guide.</p>
+    <p class="hdesc">The most comprehensive Linux-for-hackers course online. 17 deep-dive modules, 85+ structured lessons with real terminal sessions, CTF challenges, and a professional certificate — built to take you from zero to professional pentester.</p>
     <div class="hstats">
       <div class="stat"><div class="sn">17</div><div class="sl">Modules</div></div>
       <div class="stat"><div class="sn">85+</div><div class="sl">Lessons</div></div>
@@ -1175,6 +1176,7 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
 .cert-footer-strip{background:#0d1b2a;margin:1.4rem 24px 24px;padding:.7rem 1.8rem;display:flex;justify-content:space-between;align-items:center}
 .cfs-id{font-family:monospace;font-size:.55rem;color:rgba(255,255,255,.28);letter-spacing:1px}
 .cfs-verify{font-family:monospace;font-size:.55rem;color:rgba(0,255,136,.35);letter-spacing:1px}
+#cert-qr-code img,#cert-qr-code canvas{width:52px!important;height:52px!important;display:block}
 .cert-wm{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:7rem;opacity:.025;color:#8b6914;font-weight:900;letter-spacing:-3px;pointer-events:none;white-space:nowrap;font-family:'Arial'}
 </style>
       <div class="cx cert-outer-border"></div>
@@ -1197,9 +1199,9 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
         <div class="cert-name-el" id="cert-name-display">Your Full Name</div>
         <div class="cert-rule"></div>
         <div class="cert-completed-lbl">has successfully completed all requirements of</div>
-        <div class="cert-course-name-el">Linux Basics for Hackers</div>
+        <div class="cert-course-name-el">Linux Foundations for Ethical Hacking</div>
         <div class="cert-course-sub-el">Getting Started with Networking, Scripting &amp; Security in Kali</div>
-        <div class="cert-author-el">by OccupyTheWeb — No Starch Press</div>
+        <div class="cert-author-el">HackPath Academy</div>
         <div class="cert-track-el" id="cert-track-display">Linux Fundamentals &amp; Ethical Hacking</div>
         <div class="cert-stats-strip">
           <div class="css-item"><div class="css-num">17</div><div class="css-lbl">Modules</div></div>
@@ -1208,14 +1210,19 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
           <div class="css-item"><div class="css-num">100%</div><div class="css-lbl">Complete</div></div>
         </div>
         <div class="cert-sig-row">
-          <div class="cert-sig-b"><div class="cert-sig-script">OccupyTheWeb</div><div class="cert-sig-line"></div><div class="cert-sig-name">OccupyTheWeb</div><div class="cert-sig-role">Author &amp; Course Creator</div></div>
+          <div class="cert-sig-b"><div class="cert-sig-script">HackPath</div><div class="cert-sig-line"></div><div class="cert-sig-name">HackPath Academy</div><div class="cert-sig-role">Course Director</div></div>
           <div class="cert-seal"><div class="cert-seal-star">⭐</div><div class="cert-seal-txt">HACK<br>PATH<br>CERTIFIED</div></div>
           <div class="cert-sig-b"><div class="cert-sig-script">HackPath Admin</div><div class="cert-sig-line"></div><div class="cert-sig-name">HackPath Academy</div><div class="cert-sig-role">Platform Director</div></div>
         </div>
       </div>
       <div class="cert-footer-strip">
-        <div class="cfs-id" id="cert-id-display">CERTIFICATE ID: HP-XXXXXXXX</div>
-        <div class="cfs-verify">✓ VERIFY: academy.hackpath.io/verify</div>
+        <div>
+          <div class="cfs-id" id="cert-id-display">CERTIFICATE ID: HP-XXXXXXXX</div>
+          <div class="cfs-verify" style="margin-top:.3rem">✓ VERIFY: franco254.github.io/hackpath-academy/verify</div>
+        </div>
+        <div id="cert-qr-wrap" style="background:#fff;padding:5px;display:flex;align-items:center;justify-content:center;width:62px;height:62px;flex-shrink:0">
+          <div id="cert-qr-code"></div>
+        </div>
       </div>
     </div><!-- end cert-preview -->
 
@@ -4340,12 +4347,34 @@ function renderCertPreview() {
   if (banner) banner.textContent = name;
   if (emailBanner) emailBanner.textContent = cu ? cu.email : 'Sign in to auto-generate';
 
+  // Generate QR code
+  generateCertQR(certId, name);
+
   // Show certificate
   const preview = document.getElementById('cert-preview');
   if (preview) {
     preview.classList.add('visible');
     preview.scrollIntoView({behavior:'smooth', block:'start'});
   }
+}
+
+function generateCertQR(certId, name) {
+  const qrWrap = document.getElementById('cert-qr-code');
+  if (!qrWrap || typeof QRCode === 'undefined') return;
+
+  // Build verification URL with cert data encoded
+  const verifyUrl = `https://franco254.github.io/hackpath-academy/verify?id=${encodeURIComponent(certId)}&name=${encodeURIComponent(name)}`;
+
+  // Clear and regenerate
+  qrWrap.innerHTML = '';
+  new QRCode(qrWrap, {
+    text: verifyUrl,
+    width: 52,
+    height: 52,
+    colorDark: '#0d1b2a',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
 }
 
 // Legacy alias
