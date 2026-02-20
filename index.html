@@ -745,8 +745,8 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
   <div class="nav-links" id="nav-links-main">
     <button class="nb active" onclick="showView('home')">HOME</button>
     <button class="nb" onclick="showView('lesson')">LESSONS</button>
-    <button class="nb" onclick="showView('quiz')">QUIZ ENGINE</button>
-    <button class="nb pro" onclick="showView('cert')">⭐ CERTIFICATE</button>
+    <button class="nb" onclick="showView('quiz')">FINAL EXAM</button>
+    <button class="nb pro" id="nav-cert-btn" onclick="showView('cert')">🏆 CERTIFICATE</button>
   </div>
   <div class="nav-user" id="nav-user-badge" style="display:none">
     <div class="nav-avatar" id="nav-avatar">?</div>
@@ -769,7 +769,7 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
     </div>
     <div class="hact">
       <button class="btn-p" onclick="showView('lesson')">START COURSE →</button>
-      <button class="btn-s" onclick="showView('cert')">VIEW CERTIFICATE</button>
+      <button class="btn-s" onclick="showView('cert')" id="home-cert-btn">🏆 VIEW CERTIFICATE</button>
     </div>
   </div>
 
@@ -825,9 +825,9 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
 <!-- PRO / CERT -->
 <div id="view-cert" class="view">
   <div class="cv">
-    <div class="htag">// PRO FEATURES & CERTIFICATE OF COMPLETION</div>
-    <h1 style="font-family:var(--disp);font-size:1.7rem;color:var(--orange);letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem">HackPath <span style="color:var(--yellow)">PRO</span></h1>
-    <p style="color:var(--dim);margin-bottom:2rem;font-size:.88rem;max-width:620px">Unlock everything: advanced content, live sandbox, CTF labs, AI tutor, progress analytics, and your verifiable certificate of completion.</p>
+    <div class="htag">// CERTIFICATE OF COMPLETION</div>
+    <h1 style="font-family:var(--disp);font-size:1.7rem;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem">Your <span style="color:var(--cyan)">Certificate</span></h1>
+    <p style="color:var(--dim);margin-bottom:2rem;font-size:.88rem;max-width:620px">Complete all 17 modules and pass the final exam with 80% or higher to earn your verifiable HackPath Academy certificate of completion.</p>
 
     <div class="pgrid">
       <div class="pc"><div class="pi">🏆</div><div class="pt">Certificate of Completion</div><div class="pd">Professionally designed, verifiable certificate personalized with your name, date, and certificate ID. Print-ready PDF — shareable on LinkedIn and CVs.</div></div>
@@ -838,36 +838,8 @@ nav{background:rgba(10,13,15,.97);border-bottom:1px solid var(--border);padding:
       <div class="pc"><div class="pi">📥</div><div class="pt">Downloadable Resources</div><div class="pd">Command cheat sheets, bash script templates, Python exploit starters, and printable mind maps for all 17 modules — yours to keep forever.</div></div>
     </div>
 
-    <div class="cfs">
-      <div class="cft">// YOUR CERTIFICATE</div>
-      <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);padding:1rem 1.4rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem">
-        <div style="font-size:1.8rem">📜</div>
-        <div>
-          <div style="font-family:var(--mono);font-size:.65rem;color:var(--green);letter-spacing:2px;margin-bottom:.2rem">CERTIFICATE READY FOR</div>
-          <div style="font-family:var(--disp);font-size:1.1rem;color:var(--bright);font-weight:700" id="cert-user-name-banner">—</div>
-          <div style="font-family:var(--mono);font-size:.6rem;color:var(--dim);margin-top:.15rem" id="cert-user-email-banner">Sign in to auto-generate</div>
-        </div>
-      </div>
-      <div class="fi2g">
-        <div class="fg">
-          <label class="fl">Specialization Track</label>
-          <select class="fi" id="ctrack" onchange="renderCertPreview()">
-            <option>Linux Fundamentals &amp; Ethical Hacking</option>
-            <option>Network Penetration Testing</option>
-            <option>Kali Linux Mastery</option>
-            <option>Offensive Security Foundations</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label class="fl">Completion Date</label>
-          <input type="date" class="fi" id="cd" onchange="renderCertPreview()" />
-        </div>
-      </div>
-      <div style="display:flex;gap:.8rem;margin-top:1.2rem;flex-wrap:wrap">
-        <button class="btn-p" onclick="renderCertPreview()">🔄 UPDATE CERTIFICATE</button>
-        <button class="btn-s" onclick="window.print()">🖨 PRINT / SAVE PDF</button>
-      </div>
-    </div>
+    <!-- Certificate gate — rendered dynamically by showCertView() -->
+    <div id="cert-gate-section"></div>
 
     <!-- CERTIFICATE -->
     <div id="cert-preview">
@@ -2873,9 +2845,11 @@ function saveProgressToAccount() {
   if (!cu) return;
   const users = getUsers();
   if (!users[cu.email]) return;
-  users[cu.email].xp         = ST.xp;
-  users[cu.email].completed  = ST.completed;
-  users[cu.email].lessonDone = ST.lessonDone;
+  users[cu.email].xp             = ST.xp;
+  users[cu.email].completed      = ST.completed;
+  users[cu.email].lessonDone     = ST.lessonDone;
+  users[cu.email].finalExamScore = ST.finalExamScore;
+  users[cu.email].certUnlocked   = ST.certUnlocked;
   saveUsers(users);
 }
 
@@ -2909,6 +2883,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // =================== STATE ===================
 const ST = {
   completed: JSON.parse(localStorage.getItem('hp_done') || '[]'),
+  finalExamScore: parseInt(localStorage.getItem('hp_exam_score') || '-1'),
+  certUnlocked: localStorage.getItem('hp_cert_unlocked') === '1',
   xp: parseInt(localStorage.getItem('hp_xp') || '0'),
   lessonDone: JSON.parse(localStorage.getItem('hp_ldone') || '{}'),
   ch: 0,
@@ -2919,6 +2895,8 @@ function save(){
   localStorage.setItem('hp_done', JSON.stringify(ST.completed));
   localStorage.setItem('hp_xp', ST.xp);
   localStorage.setItem('hp_ldone', JSON.stringify(ST.lessonDone));
+  localStorage.setItem('hp_exam_score', ST.finalExamScore);
+  if (ST.certUnlocked) localStorage.setItem('hp_cert_unlocked', '1');
   saveProgressToAccount();
 }
 
@@ -2928,8 +2906,8 @@ function showView(name){
   document.getElementById('view-'+name).classList.add('active');
   if(name==='home') renderHome();
   if(name==='lesson') renderLesson();
-  if(name==='quiz') startGlobalQuiz();
-  if(name==='cert') { autoFillCert(); renderCertPreview(); }
+  if(name==='quiz') { document.getElementById('qe-num') && (document.getElementById('qe-num').textContent='FINAL EXAM'); startGlobalQuiz(); }
+  if(name==='cert') { showCertView(); }
 }
 
 // =================== HOME ===================
@@ -3163,20 +3141,161 @@ function answerGQ(oi, correct){
   setTimeout(()=>{ gqState.idx++; gqState.answered=false; renderGQ(); }, 1300);
 }
 function showGQResult(){
-  const pct = Math.round(gqState.correct/GLOBAL_QUIZ.length*100);
-  const xpE = gqState.correct*5;
-  ST.xp+=xpE; save();
-  document.getElementById('xp-disp').textContent=ST.xp;
+  const pct    = Math.round(gqState.correct/GLOBAL_QUIZ.length*100);
+  const xpE    = gqState.correct*5;
+  const passed = pct >= 80;
+  const allModules = ST.completed.length >= CHAPTERS.length;
+
+  // Save exam score to state
+  ST.finalExamScore = pct;
+  ST.xp += xpE;
+
+  // Unlock cert if both conditions met
+  if (passed && allModules && !ST.certUnlocked) {
+    ST.certUnlocked = true;
+  }
+  save();
+  document.getElementById('xp-disp').textContent = ST.xp;
+
+  const certBtn = passed && allModules
+    ? `<button class="btn-p" onclick="showView('cert')" style="margin-top:1.2rem">🏆 CLAIM YOUR CERTIFICATE →</button>`
+    : passed && !allModules
+    ? `<div style="margin-top:1rem;background:rgba(255,140,0,.07);border:1px solid rgba(255,140,0,.2);padding:.8rem 1.2rem;font-family:var(--mono);font-size:.68rem;color:var(--orange);letter-spacing:.5px">
+        ⚠️ Complete all ${CHAPTERS.length} modules to unlock your certificate<br>
+        <span style="color:var(--dim)">${ST.completed.length} / ${CHAPTERS.length} modules done</span>
+       </div>`
+    : `<div style="margin-top:1rem;background:rgba(255,51,102,.06);border:1px solid rgba(255,51,102,.15);padding:.8rem 1.2rem;font-family:var(--mono);font-size:.68rem;color:var(--red);letter-spacing:.5px">
+        ✗ 80% required to pass — you scored ${pct}%. Retake to unlock your certificate.
+       </div>`;
+
   document.getElementById('qe-body').innerHTML=`
-    <div style="text-align:center;padding:2rem">
-      <div style="font-family:var(--disp);font-size:3rem;color:var(--green);margin-bottom:.5rem">${pct}%</div>
-      <div style="font-family:var(--mono);color:var(--dim);margin-bottom:1rem">${gqState.correct} / ${GLOBAL_QUIZ.length} CORRECT</div>
-      <div style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);display:inline-block;padding:.2rem .8rem;font-family:var(--mono);font-size:.7rem;color:var(--yellow)">+${xpE} XP EARNED</div>
-      <div style="margin-top:1.5rem;color:var(--dim);font-size:.85rem;max-width:400px;margin-left:auto;margin-right:auto">
-        ${pct>=80?'🏆 Excellent! You are ready for real-world penetration testing.':pct>=60?'⚡ Good work! Review the modules where you struggled.':'📚 Keep studying — revisit chapters and retry the quiz.'}
+    <div style="text-align:center;padding:2rem 1rem">
+      <div style="font-family:var(--mono);font-size:.62rem;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:.6rem">FINAL EXAM RESULT</div>
+      <div style="font-family:var(--disp);font-size:3.5rem;font-weight:900;color:${passed?'var(--green)':'var(--red)'};margin-bottom:.3rem;line-height:1">${pct}%</div>
+      <div style="font-family:var(--mono);color:var(--dim);margin-bottom:.8rem;font-size:.75rem;letter-spacing:1px">${gqState.correct} / ${GLOBAL_QUIZ.length} CORRECT</div>
+      <div style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);display:inline-block;padding:.25rem 1rem;font-family:var(--mono);font-size:.7rem;color:var(--yellow);margin-bottom:1rem">+${xpE} XP EARNED</div>
+      <div style="font-family:var(--mono);font-size:.78rem;color:${passed?'var(--green)':'var(--dim)'};margin-bottom:.5rem">
+        ${passed ? '✓ PASSED — 80% THRESHOLD MET' : '✗ NOT PASSED — 80% REQUIRED TO PASS'}
       </div>
-      <button class="btn-p" onclick="startGlobalQuiz()" style="margin-top:2rem">RETAKE QUIZ</button>
+      ${certBtn}
+      <div style="margin-top:1.5rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn-s" onclick="startGlobalQuiz()">RETAKE EXAM</button>
+        ${!passed ? '' : `<button class="btn-s" onclick="showView('lesson')">REVIEW LESSONS</button>`}
+      </div>
     </div>`;
+}
+
+
+// =================== CERTIFICATE GATE ===================
+function showCertView() {
+  const cu          = getCurrentUser();
+  const totalMods   = CHAPTERS.length;
+  const doneMods    = ST.completed.length;
+  const examScore   = ST.finalExamScore; // -1 = never taken
+  const allDone     = doneMods >= totalMods;
+  const examPassed  = examScore >= 80;
+  const unlocked    = ST.certUnlocked || (allDone && examPassed);
+
+  // Persist if newly unlocked
+  if (unlocked && !ST.certUnlocked) {
+    ST.certUnlocked = true;
+    save();
+  }
+
+  const gate = document.getElementById('cert-gate-section');
+  if (!gate) return;
+
+  if (unlocked) {
+    // ── UNLOCKED: show generate UI ──
+    const name = cu ? cu.name : '—';
+    gate.innerHTML = `
+      <div style="background:linear-gradient(135deg,rgba(0,255,136,.08),rgba(0,212,255,.04));border:1px solid rgba(0,255,136,.25);padding:1.4rem 1.6rem;margin-bottom:1.6rem;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap">
+        <div style="font-size:2.2rem">🏆</div>
+        <div>
+          <div style="font-family:var(--mono);font-size:.62rem;color:var(--green);letter-spacing:3px;margin-bottom:.3rem">CERTIFICATE UNLOCKED</div>
+          <div style="font-family:var(--disp);font-size:1.15rem;color:var(--bright);font-weight:900">${escHtml(name)}</div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--dim);margin-top:.2rem">
+            ✓ All ${totalMods} modules completed &nbsp;·&nbsp; ✓ Final exam: ${examScore}%
+          </div>
+        </div>
+      </div>
+      <div class="cft">// GENERATE YOUR CERTIFICATE</div>
+      <div class="fi2g" style="margin-bottom:1.2rem">
+        <div class="fg">
+          <label class="fl">Specialization Track</label>
+          <select class="fi" id="ctrack" onchange="renderCertPreview()">
+            <option>Linux Fundamentals &amp; Ethical Hacking</option>
+            <option>Network Penetration Testing</option>
+            <option>Kali Linux Mastery</option>
+            <option>Offensive Security Foundations</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Completion Date</label>
+          <input type="date" class="fi" id="cd" onchange="renderCertPreview()" />
+        </div>
+      </div>
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+        <button class="btn-p" onclick="renderCertPreview()">📜 GENERATE CERTIFICATE</button>
+        <button class="btn-s" onclick="window.print()">🖨 PRINT / SAVE PDF</button>
+      </div>`;
+
+    // Set today's date
+    const cdEl = document.getElementById('cd');
+    if (cdEl && !cdEl.value) cdEl.value = new Date().toISOString().split('T')[0];
+    autoFillCert();
+    renderCertPreview();
+
+  } else {
+    // ── LOCKED: show requirements checklist ──
+    const modBar  = Math.round(doneMods / totalMods * 100);
+    const examBar = examScore >= 0 ? examScore : 0;
+    const examTxt = examScore >= 0 ? `${examScore}% (need 80%)` : 'Not attempted yet';
+    const examCol = examScore >= 80 ? 'var(--green)' : examScore >= 0 ? 'var(--red)' : 'var(--dim)';
+
+    gate.innerHTML = `
+      <div style="background:rgba(255,140,0,.05);border:1px solid rgba(255,140,0,.2);border-left:3px solid var(--orange);padding:1.4rem 1.6rem;margin-bottom:1.6rem">
+        <div style="font-family:var(--mono);font-size:.65rem;color:var(--orange);letter-spacing:3px;margin-bottom:.5rem">🔒 CERTIFICATE LOCKED</div>
+        <div style="font-size:.88rem;color:var(--dim);margin-bottom:1.4rem">Complete both requirements below to unlock your certificate of completion.</div>
+
+        <div style="margin-bottom:1.2rem">
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.65rem;margin-bottom:.4rem">
+            <span style="color:${allDone ? 'var(--green)' : 'var(--bright)'}">
+              ${allDone ? '✓' : '○'} COMPLETE ALL MODULES
+            </span>
+            <span style="color:${allDone ? 'var(--green)' : 'var(--dim)'}">
+              ${doneMods} / ${totalMods}
+            </span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${modBar}%;background:${allDone ? 'var(--green)' : 'var(--cyan)'};transition:width .4s"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.4rem">
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.65rem;margin-bottom:.4rem">
+            <span style="color:${examPassed ? 'var(--green)' : 'var(--bright)'}">
+              ${examPassed ? '✓' : '○'} PASS FINAL EXAM WITH 80%+
+            </span>
+            <span style="color:${examCol}">${examTxt}</span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${examBar}%;background:${examPassed ? 'var(--green)' : examScore >= 0 ? 'var(--red)' : 'var(--border)'};transition:width .4s"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+          ${!allDone ? `<button class="btn-p" onclick="showView('lesson')">→ CONTINUE LESSONS</button>` : ''}
+          <button class="${allDone ? 'btn-p' : 'btn-s'}" onclick="showView('quiz')">
+            ${examScore >= 0 && !examPassed ? '🔄 RETAKE FINAL EXAM' : '→ TAKE FINAL EXAM'}
+          </button>
+        </div>
+      </div>`;
+
+    // Hide the certificate preview
+    const preview = document.getElementById('cert-preview');
+    if (preview) preview.classList.remove('visible');
+  }
 }
 
 // =================== CERTIFICATE ===================
